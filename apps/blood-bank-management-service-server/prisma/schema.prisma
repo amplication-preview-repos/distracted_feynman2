@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Donor {
+  bloodType   EnumDonorBloodType?
+  createdAt   DateTime            @default(now())
+  donations   Donation[]
+  email       String?
+  id          String              @id @default(cuid())
+  name        String?
+  phoneNumber String?
+  updatedAt   DateTime            @updatedAt
+}
+
+model BloodRequest {
+  bloodType   EnumBloodRequestBloodType?
+  createdAt   DateTime                   @default(now())
+  donations   Donation[]
+  id          String                     @id @default(cuid())
+  patientName String?
+  quantity    Int?
+  status      EnumBloodRequestStatus?
+  updatedAt   DateTime                   @updatedAt
+}
+
+model BloodBank {
+  address        String?
+  bloodTypeStock Json?
+  contactNumber  String?
+  createdAt      DateTime @default(now())
+  id             String   @id @default(cuid())
+  name           String?
+  updatedAt      DateTime @updatedAt
+}
+
+model Donation {
+  bloodRequest   BloodRequest? @relation(fields: [bloodRequestId], references: [id])
+  bloodRequestId String?
+  createdAt      DateTime      @default(now())
+  donationDate   DateTime?
+  donor          Donor?        @relation(fields: [donorId], references: [id])
+  donorId        String?
+  id             String        @id @default(cuid())
+  updatedAt      DateTime      @updatedAt
+}
+
+enum EnumDonorBloodType {
+  Option1
+}
+
+enum EnumBloodRequestBloodType {
+  Option1
+}
+
+enum EnumBloodRequestStatus {
+  Option1
+}
